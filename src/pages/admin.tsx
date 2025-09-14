@@ -1,10 +1,10 @@
-import { useEffect } from "react"
-import { CloudUploadOutlined, DeleteOutlined, EditOutlined, ExportOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { Button, Modal, Space } from 'antd';
+import { Button, Space } from 'antd';
 import { useRef, useState } from 'react';
 import { AddUserForm } from "@/components/add.user.form";
+import { deleteUserByID, getUserAPI, getUserByID } from "@/services/api";
 
 
 export const AdminPage = () => {
@@ -12,23 +12,19 @@ export const AdminPage = () => {
     const [currentUser, setCurrentUser] = useState<null | IUser>(null);
 
     const onEditUser = async (id: number) => {
-        const result = await fetch(`${import.meta.env.VITE_BACKEND_URL}/admin/users/${id}`).then(res => res);
-        if (!result.ok) throw new Error('Error');
-        const user: IUser = await result.json();
-        setCurrentUser(user);
-        setIsAddUserModalOpen(true);
+        const result = await getUserByID(id);
+        if (result.data) {
+            setCurrentUser(result.data);
+            setIsAddUserModalOpen(true);
+        }
     }
 
     const onDeleteUser = async (id: number) => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/admin/deleteUser/${id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }).then(res => {
+            const result = await deleteUserByID(id);
+            if (result.data) {
                 refreshTable();
-            });
+            }
         } catch (error) {
             console.log(error);
         }
@@ -79,12 +75,9 @@ export const AdminPage = () => {
                 actionRef={actionRef}
                 cardBordered
                 request={async (params, sort, filter) => {
-                    const result = await fetch(`${import.meta.env.VITE_BACKEND_URL}/admin/users`).then(res => res);
-                    if (!result.ok) { throw new Error('Error') }
-                    const users: IUser[] = await result.json();
-
+                    const result = await getUserAPI();
                     return {
-                        data: users,
+                        data: result.data,
                         success: true,
                     }
 
@@ -98,6 +91,22 @@ export const AdminPage = () => {
                     >
                         Add user
                     </Button>,
+                    <Button
+                        onClick={() => {
+                            async function getMessage() {
+                                try {
+                                    const response = await getUserAPI();
+                                    console.log(response);
+                                }
+                                catch (error) {
+                                    console.error(error);
+                                }
+                            }
+                            getMessage();
+                        }}
+                    >
+                        Click me
+                    </Button>
                 ]}
             />
             <AddUserForm

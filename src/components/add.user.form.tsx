@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
+import { useEffect } from 'react';
+import { Form, Input, Modal } from 'antd';
 import type { FormProps } from 'antd/lib';
+import { createUserAPI, updateUserAPI } from '@/services/api';
 
 interface IProps {
     isModalOpen: boolean;
@@ -20,31 +21,21 @@ export const AddUserForm = (props: IProps) => {
 
     const onFinish: FormProps<IUser>['onFinish'] = async (values) => {
         console.log('Success:', values);
+        const { name, email, phone, id } = values;
         try {
-            let res;
             if (!currentUser) {
-                res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/admin/users`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(values),
-                }).then(res => {
+                const result = await createUserAPI(name, email, phone);
+                if (result.data) {
                     onResetAndClose();
                     refreshTable();
-                });
+                }
             }
             else {
-                res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/admin/users/${currentUser.id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(values),
-                }).then(res => {
-                    refreshTable();
+                const result = await updateUserAPI(name, email, phone, id);
+                if (result.data) {
                     onResetAndClose();
-                });
+                    refreshTable();
+                }
             }
         } catch (error) {
             console.error('Error details:', error);
