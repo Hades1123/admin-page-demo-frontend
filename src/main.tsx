@@ -3,16 +3,21 @@ import { createRoot } from 'react-dom/client'
 import 'styles/global.css'
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
+import { AdminPage } from './pages/admin';
+import { ConfigProvider } from 'antd';
+import enUS from 'antd/es/locale/en_US';
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <div className='text-red-500'>Hello World</div>,
+        element: <AdminPage />,
     },
 ]);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <RouterProvider router={router} />,
+        <ConfigProvider locale={enUS}>
+            <RouterProvider router={router} />
+        </ConfigProvider>
     </StrictMode>,
 )
