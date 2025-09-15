@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
-import { Form, Input, Modal } from 'antd';
+import { useEffect, useState } from 'react';
+import { Form, Image, Input, Modal, type UploadFile } from 'antd';
 import type { FormProps } from 'antd/lib';
-import { createUserAPI, updateUserAPI } from '@/services/api';
+import { createUserAPI, updateUserAPI, uploadAvatarAPI } from '@/services/api';
+import { UploadImg } from './upload.img';
 
 interface IProps {
     isModalOpen: boolean;
@@ -14,6 +15,8 @@ interface IProps {
 export const AddUserForm = (props: IProps) => {
     const { isModalOpen, setIsModalOpen, refreshTable, setCurrentUser, currentUser } = props;
     const [form] = Form.useForm<IUser>();
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [currentAvatar, setCurrentAvatar] = useState<string | null>(null);
 
     const handleOk = () => {
         form.submit();
@@ -21,6 +24,14 @@ export const AddUserForm = (props: IProps) => {
 
     const onFinish: FormProps<IUser>['onFinish'] = async (values) => {
         console.log('Success:', values);
+        console.log(fileList);
+        let avatar = "";
+        if (fileList && fileList.length && fileList[0].originFileObj) {
+            const result = await uploadAvatarAPI(fileList[0].originFileObj);
+            if (result.data) {
+                avatar = result.data;
+            }
+        }
         const { name, email, phone, id } = values;
         try {
             if (!currentUser) {
@@ -31,7 +42,7 @@ export const AddUserForm = (props: IProps) => {
                 }
             }
             else {
-                const result = await updateUserAPI(name, email, phone, id);
+                const result = await updateUserAPI(name, email, phone, id, avatar);
                 if (result.data) {
                     onResetAndClose();
                     refreshTable();
@@ -59,7 +70,8 @@ export const AddUserForm = (props: IProps) => {
                 name: currentUser.name,
                 email: currentUser.email,
                 phone: currentUser.phone,
-            })
+            });
+            setCurrentAvatar(currentUser.avatar);
         }
     }, [isModalOpen, currentUser])
 
@@ -112,6 +124,16 @@ export const AddUserForm = (props: IProps) => {
                 >
                     <Input />
                 </Form.Item>
+
+                {currentAvatar &&
+                    <Image
+                        src={`${import.meta.env.VITE_BACKEND_URL}/images/${currentAvatar}`}
+                        width={100}
+                    />}
+                <UploadImg
+                    fileList={fileList}
+                    setFileList={setFileList}
+                />
             </Form>
         </Modal>
     )

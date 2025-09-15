@@ -51,7 +51,7 @@ export const AdminPage = () => {
         {
             title: 'Action',
             key: 'action',
-            render: (_, record, index) => (
+            render: (_, record) => (
                 <Space size="middle">
                     <EditOutlined style={{ color: 'orange', cursor: 'pointer' }} onClick={() => onEditUser(record.id)} />
                     <DeleteOutlined style={{ color: 'red', cursor: 'pointer' }} onClick={() => onDeleteUser(record.id)} />
