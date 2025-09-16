@@ -3,21 +3,28 @@ import { createRoot } from 'react-dom/client'
 import 'styles/global.css'
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
-import { AdminPage } from './pages/admin';
-import { ConfigProvider } from 'antd';
+import { App, ConfigProvider } from 'antd';
 import enUS from 'antd/es/locale/en_US';
+import { Layout } from './layout';
+import { RegisterPage } from './pages/register';
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <AdminPage />,
+        element: <Layout />,
     },
+    {
+        path: '/register',
+        element: <RegisterPage />
+    }
 ]);
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <ConfigProvider locale={enUS}>
-            <RouterProvider router={router} />
+            <App>
+                <RouterProvider router={router} />
+            </App>
         </ConfigProvider>
     </StrictMode>,
 )

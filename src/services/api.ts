@@ -9,8 +9,8 @@ export const getUserByID = (id: number) => {
     return axios.get<ApiResponse<IUser>>(`/admin/users/${id}`);
 }
 
-export const createUserAPI = (name: string, email: string, phone: string) => {
-    return axios.post<ApiResponse<IUser>>('/admin/users', { name, email, phone });
+export const createUserAPI = (name: string, email: string, phone: string, password: string) => {
+    return axios.post<ApiResponse<IUser>>('/admin/users', { name, email, phone, password });
 }
 
 export const updateUserAPI = (name: string, email: string, phone: string, id: number, avatar: string) => {

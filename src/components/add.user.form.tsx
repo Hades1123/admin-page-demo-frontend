@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Form, Image, Input, Modal, type UploadFile } from 'antd';
+import { Col, Form, Image, Input, Modal, Row, type UploadFile } from 'antd';
 import type { FormProps } from 'antd/lib';
 import { createUserAPI, updateUserAPI, uploadAvatarAPI } from '@/services/api';
 import { UploadImg } from './upload.img';
+import { v4 as uuidv4 } from 'uuid';
 
 interface IProps {
     isModalOpen: boolean;
@@ -32,10 +33,10 @@ export const AddUserForm = (props: IProps) => {
                 avatar = result.data;
             }
         }
-        const { name, email, phone, id } = values;
+        const { name, email, phone, id, password } = values;
         try {
             if (!currentUser) {
-                const result = await createUserAPI(name, email, phone);
+                const result = await createUserAPI(name, email, phone, password);
                 if (result.data) {
                     onResetAndClose();
                     refreshTable();
@@ -61,6 +62,7 @@ export const AddUserForm = (props: IProps) => {
         form.resetFields();
         setIsModalOpen(false);
         setCurrentUser(null);
+        setCurrentAvatar(null);
     }
 
     useEffect(() => {
@@ -72,6 +74,12 @@ export const AddUserForm = (props: IProps) => {
                 phone: currentUser.phone,
             });
             setCurrentAvatar(currentUser.avatar);
+            setFileList([{
+                uid: uuidv4(),
+                name: 'img.png',
+                status: 'done',
+                url: import.meta.env.VITE_BACKEND_URL + '/images/' + currentUser.avatar,
+            }])
         }
     }, [isModalOpen, currentUser])
 
@@ -84,56 +92,57 @@ export const AddUserForm = (props: IProps) => {
             onCancel={onResetAndClose}
             maskClosable={false}
             okText={currentUser ? 'Update' : 'Create'}
+            destroyOnHidden={true}
+            width={800}
         >
             <Form
                 form={form}
                 layout='vertical'
                 name="Add User form"
-                style={{ maxWidth: 600 }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
             >
-                <Form.Item<IUser>
-                    label="Id"
-                    name="id"
-                    hidden
-                >
-                    <Input />
-                </Form.Item>
+                <Row>
+                    <Col span={12}>
+                        <UploadImg
+                            fileList={fileList}
+                            setFileList={setFileList}
+                        />
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item<IUser>
+                            label="Id"
+                            name="id"
+                            hidden
+                        >
+                            <Input />
+                        </Form.Item>
 
-                <Form.Item<IUser>
-                    label="Name"
-                    name="name"
-                    rules={[{ required: true, message: 'Please input your name!' }]}
-                >
-                    <Input />
-                </Form.Item>
+                        <Form.Item<IUser>
+                            label="Name"
+                            name="name"
+                            rules={[{ required: true, message: 'Please input your name!' }]}
+                        >
+                            <Input />
+                        </Form.Item>
 
-                <Form.Item<IUser>
-                    label="Email"
-                    name="email"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
-                >
-                    <Input />
-                </Form.Item>
+                        <Form.Item<IUser>
+                            label="Email"
+                            name="email"
+                            rules={[{ required: true, message: 'Please input your email!' }]}
+                        >
+                            <Input />
+                        </Form.Item>
 
-                <Form.Item<IUser>
-                    label="Phone"
-                    name="phone"
-                    rules={[{ required: true, message: 'Please input your phone!' }]}
-                >
-                    <Input />
-                </Form.Item>
-
-                {currentAvatar &&
-                    <Image
-                        src={`${import.meta.env.VITE_BACKEND_URL}/images/${currentAvatar}`}
-                        width={100}
-                    />}
-                <UploadImg
-                    fileList={fileList}
-                    setFileList={setFileList}
-                />
+                        <Form.Item<IUser>
+                            label="Phone"
+                            name="phone"
+                            rules={[{ required: true, message: 'Please input your phone!' }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                </Row>
             </Form>
         </Modal>
     )
