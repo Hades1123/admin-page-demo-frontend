@@ -9,12 +9,12 @@ export const getUserByID = (id: number) => {
     return axios.get<ApiResponse<IUser>>(`/admin/users/${id}`);
 }
 
-export const createUserAPI = (name: string, email: string, phone: string, password: string) => {
-    return axios.post<ApiResponse<IUser>>('/admin/users', { name, email, phone, password });
+export const createUserAPI = (name: string, email: string, phone: string, password: string, avatar?: string, roleID?: number) => {
+    return axios.post<ApiResponse<IUser>>('/admin/users', { name, email, phone, password, avatar, roleID });
 }
 
-export const updateUserAPI = (name: string, email: string, phone: string, id: number, avatar: string) => {
-    return axios.put<ApiResponse<IUser>>(`/admin/users/${id}`, { name, email, phone, avatar });
+export const updateUserAPI = (name: string, email: string, phone: string, id: number, avatar: string, roleID: number) => {
+    return axios.put<ApiResponse<IUser>>(`/admin/users/${id}`, { name, email, phone, avatar, roleID });
 }
 
 export const deleteUserByID = (id: number) => {
@@ -29,4 +29,8 @@ export const uploadAvatarAPI = (file: RcFile) => {
             "Content-Type": "multipart/form-data",
         }
     });
+}
+
+export const getUserRolesAPI = () => {
+    return axios.get<ApiResponse<{ id: number, name: string }[]>>('/admin/userRoles');
 }

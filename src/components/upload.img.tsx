@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { UploadRequestOption } from 'rc-upload/lib/interface';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Image, Upload } from 'antd';
+import { Image, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 
 interface IProps {
@@ -52,11 +52,6 @@ export const UploadImg = (props: IProps) => {
         }, 0);
     };
 
-
-    // useEffect(() => {
-    //     setFileList([]);
-    // }, [])
-
     return (
         <>
             <Upload
@@ -66,7 +61,7 @@ export const UploadImg = (props: IProps) => {
                 onChange={handleChange}
                 customRequest={dummyRequest}
             >
-                <Button type='primary'>Upload</Button>
+                {fileList.length >= 1 ? null : uploadButton}
             </Upload>
             {previewImage && (
                 <Image

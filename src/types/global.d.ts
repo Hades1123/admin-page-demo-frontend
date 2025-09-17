@@ -15,5 +15,6 @@ declare global {
         phone: string,
         password: string,
         avatar: string,
+        roleID: number,
     }
 }

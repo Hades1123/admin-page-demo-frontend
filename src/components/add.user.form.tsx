@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Col, Form, Image, Input, Modal, Row, type UploadFile } from 'antd';
+import { Col, Form, Input, Modal, Row, Select, type UploadFile } from 'antd';
 import type { FormProps } from 'antd/lib';
-import { createUserAPI, updateUserAPI, uploadAvatarAPI } from '@/services/api';
+import { createUserAPI, getUserRolesAPI, updateUserAPI, uploadAvatarAPI } from '@/services/api';
 import { UploadImg } from './upload.img';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,15 +17,14 @@ export const AddUserForm = (props: IProps) => {
     const { isModalOpen, setIsModalOpen, refreshTable, setCurrentUser, currentUser } = props;
     const [form] = Form.useForm<IUser>();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const [currentAvatar, setCurrentAvatar] = useState<string | null>(null);
+    const [roles, setRoles] = useState<{ value: number, label: string }[]>([]);
 
     const handleOk = () => {
         form.submit();
     };
 
     const onFinish: FormProps<IUser>['onFinish'] = async (values) => {
-        console.log('Success:', values);
-        console.log(fileList);
+        console.log(values)
         let avatar = "";
         if (fileList && fileList.length && fileList[0].originFileObj) {
             const result = await uploadAvatarAPI(fileList[0].originFileObj);
@@ -33,17 +32,18 @@ export const AddUserForm = (props: IProps) => {
                 avatar = result.data;
             }
         }
-        const { name, email, phone, id, password } = values;
+
+        const { name, email, phone, id, password, roleID } = values;
         try {
             if (!currentUser) {
-                const result = await createUserAPI(name, email, phone, password);
+                const result = await createUserAPI(name, email, phone, password, avatar, roleID);
                 if (result.data) {
                     onResetAndClose();
                     refreshTable();
                 }
             }
             else {
-                const result = await updateUserAPI(name, email, phone, id, avatar);
+                const result = await updateUserAPI(name, email, phone, id, avatar, roleID);
                 if (result.data) {
                     onResetAndClose();
                     refreshTable();
@@ -59,10 +59,9 @@ export const AddUserForm = (props: IProps) => {
     };
 
     const onResetAndClose = () => {
-        form.resetFields();
         setIsModalOpen(false);
+        form.resetFields();
         setCurrentUser(null);
-        setCurrentAvatar(null);
     }
 
     useEffect(() => {
@@ -72,8 +71,8 @@ export const AddUserForm = (props: IProps) => {
                 name: currentUser.name,
                 email: currentUser.email,
                 phone: currentUser.phone,
+                roleID: currentUser.roleID,
             });
-            setCurrentAvatar(currentUser.avatar);
             setFileList([{
                 uid: uuidv4(),
                 name: 'img.png',
@@ -81,7 +80,25 @@ export const AddUserForm = (props: IProps) => {
                 url: import.meta.env.VITE_BACKEND_URL + '/images/' + currentUser.avatar,
             }])
         }
+        else {
+            setFileList([]);
+        }
     }, [isModalOpen, currentUser])
+
+    useEffect(() => {
+        const loadRoles = async () => {
+            const result = await getUserRolesAPI();
+            if (result.data) {
+                setRoles(result.data.map(item => {
+                    return {
+                        label: item.name,
+                        value: item.id,
+                    }
+                }));
+            }
+        }
+        loadRoles();
+    }, [])
 
     return (
         <Modal
@@ -93,7 +110,7 @@ export const AddUserForm = (props: IProps) => {
             maskClosable={false}
             okText={currentUser ? 'Update' : 'Create'}
             destroyOnHidden={true}
-            width={800}
+            width={400}
         >
             <Form
                 form={form}
@@ -102,14 +119,17 @@ export const AddUserForm = (props: IProps) => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
             >
-                <Row>
-                    <Col span={12}>
+                <Row gutter={[16, 16]}>
+                    <Col span={24}>
                         <UploadImg
                             fileList={fileList}
                             setFileList={setFileList}
                         />
                     </Col>
-                    <Col span={12}>
+                </Row>
+
+                <Row justify={'space-between'}>
+                    <Col span={24}>
                         <Form.Item<IUser>
                             label="Id"
                             name="id"
@@ -125,7 +145,8 @@ export const AddUserForm = (props: IProps) => {
                         >
                             <Input />
                         </Form.Item>
-
+                    </Col>
+                    <Col span={24}>
                         <Form.Item<IUser>
                             label="Email"
                             name="email"
@@ -133,13 +154,27 @@ export const AddUserForm = (props: IProps) => {
                         >
                             <Input />
                         </Form.Item>
-
+                    </Col>
+                    <Col span={14}>
                         <Form.Item<IUser>
                             label="Phone"
                             name="phone"
                             rules={[{ required: true, message: 'Please input your phone!' }]}
                         >
                             <Input />
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item<IUser>
+                            label="Role"
+                            name="roleID"
+                            rules={[{ required: true, message: 'Please input your role!' }]}
+                        >
+                            <Select
+                                defaultValue={currentUser?.roleID ?? "None"}
+                                options={roles}
+                                value={currentUser?.roleID ?? -1}
+                            />
                         </Form.Item>
                     </Col>
                 </Row>

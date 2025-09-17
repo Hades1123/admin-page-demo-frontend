@@ -15,7 +15,7 @@ export const Layout = () => {
                     </div>
                     <div className="flex gap-4">
                         <img src={reactIcon} alt="avatar" />
-                        <span>Xin chao Hades</span>
+                        <span>Hello, Hades</span>
                     </div>
                 </header>
 
