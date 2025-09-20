@@ -7,7 +7,7 @@ import { AddUserForm } from "@/components/add.user.form";
 import { deleteUserByID, getUserAPI, getUserByID } from "@/services/api";
 
 
-export const AdminPage = () => {
+export const UsersPage = () => {
     const [isAddUserModalOpen, setIsAddUserModalOpen] = useState<boolean>(false);
     const [currentUser, setCurrentUser] = useState<null | IUser>(null);
 

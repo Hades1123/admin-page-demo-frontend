@@ -5,17 +5,38 @@ import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { App, ConfigProvider } from 'antd';
 import enUS from 'antd/es/locale/en_US';
-import { Layout } from './layout';
-import { RegisterPage } from './pages/register';
+import { RegisterPage } from 'pages/client/register';
+import { AdminLayout } from 'pages/admin/admin.layout';
+import { DashboardPage } from '@/pages/admin/admin.dashboard';
+import { UsersPage } from './pages/admin/admin.users';
+import { LoginPage } from './pages/client/login';
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Layout />,
+        element: <div>This is empty page</div>,
     },
     {
         path: '/register',
         element: <RegisterPage />
+    },
+    {
+        path: '/login',
+        element: <LoginPage />
+    },
+    {
+        path: '/admin',
+        Component: AdminLayout,
+        children: [
+            {
+                path: 'dashboard',
+                Component: DashboardPage,
+            },
+            {
+                path: 'users',
+                Component: UsersPage,
+            }
+        ]
     }
 ]);
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Col, Form, Input, Modal, Row, Select, type UploadFile } from 'antd';
 import type { FormProps } from 'antd/lib';
 import { createUserAPI, getUserRolesAPI, updateUserAPI, uploadAvatarAPI } from '@/services/api';
-import { UploadImg } from './upload.img';
+import { UploadImg } from '@/components/upload.img';
 import { v4 as uuidv4 } from 'uuid';
 
 interface IProps {

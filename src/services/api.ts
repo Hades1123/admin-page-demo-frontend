@@ -1,5 +1,5 @@
 import type { RcFile } from 'antd/es/upload';
-import axios from './axios.customize'
+import axios from '@/services/axios.customize'
 
 export const getUserAPI = () => {
     return axios.get<ApiResponse<IUser[]>>('/admin/users');
