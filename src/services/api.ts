@@ -34,3 +34,9 @@ export const uploadAvatarAPI = (file: RcFile) => {
 export const getUserRolesAPI = () => {
     return axios.get<ApiResponse<{ id: number, name: string }[]>>('/admin/userRoles');
 }
+
+export const registerAPI = (name: string, email: string, password: string, confirmPassword: string, phone: string) => {
+    return axios.post<ApiResponse<IUser>>('/register', {
+        email, password, confirmPassword, phone, name
+    });
+}

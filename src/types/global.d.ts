@@ -4,7 +4,7 @@ declare global {
         success: boolean,
         data?: T;
         error?: {
-            message: string,
+            message: string[],
         }
         status?: number,
     }
@@ -16,5 +16,6 @@ declare global {
         password: string,
         avatar: string,
         roleID: number,
+        confirmPassword?: string,
     }
 }

@@ -3,18 +3,13 @@ import type { FormProps } from 'antd';
 import { App, Button, Col, Form, Input, Row } from 'antd';
 import { Link } from 'react-router-dom';
 
-type FieldType = Omit<IUser, 'avatar' | 'id'>;
+type FieldType = Pick<IUser, 'password' | 'email'>;
 
 
 export const LoginPage = () => {
-    const { message } = App.useApp();
+    const { message, notification } = App.useApp();
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        console.log('Success:', values);
-        const { email, name, phone, password } = values;
-        const result = await createUserAPI(name, email, phone, password);
-        if (result.data) {
-            message.success('Register successfully !!!');
-        }
+        console.log(values);
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -36,17 +31,24 @@ export const LoginPage = () => {
                             style={{ width: 400 }}
                         >
                             <Form.Item<FieldType>
-                                label="Name"
-                                name="name"
-                                rules={[{ required: true, message: 'Please input your name!' }]}
-                            >
-                                <Input />
-                            </Form.Item>
-
-                            <Form.Item<FieldType>
                                 label="Email"
                                 name="email"
-                                rules={[{ required: true, message: 'Please input your email!' }]}
+                                validateFirst
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'The email is required.',
+                                    },
+                                    {
+                                        validator: (_, value) => {
+                                            if (/(?:[a-z0-9!#$%&'*+\x2f=?^_`\x7b-\x7d~\x2d]+(?:\.[a-z0-9!#$%&'*+\x2f=?^_`\x7b-\x7d~\x2d]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9\x2d]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9\x2d]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9\x2d]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(value)) {
+                                                return Promise.resolve();
+                                            } else {
+                                                return Promise.reject('Invalid email format');
+                                            }
+                                        }
+                                    }
+                                ]}
                             >
                                 <Input />
                             </Form.Item>
@@ -54,15 +56,10 @@ export const LoginPage = () => {
                             <Form.Item<FieldType>
                                 label="Password"
                                 name="password"
-                                rules={[{ required: true, message: 'Please input your password!' }]}
-                            >
-                                <Input.Password />
-                            </Form.Item>
-
-                            <Form.Item<FieldType>
-                                label="Phone"
-                                name="phone"
-                                rules={[{ required: true, message: 'Please input your phone!' }]}
+                                validateFirst
+                                rules={[
+                                    { required: true, message: 'Please input your password!' },
+                                ]}
                             >
                                 <Input />
                             </Form.Item>
