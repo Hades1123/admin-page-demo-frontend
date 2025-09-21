@@ -1,15 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import 'styles/global.css'
-import { createBrowserRouter } from "react-router";
-import { RouterProvider } from "react-router/dom";
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { App, ConfigProvider } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import { RegisterPage } from 'pages/client/register';
 import { AdminLayout } from 'pages/admin/admin.layout';
 import { DashboardPage } from '@/pages/admin/admin.dashboard';
-import { UsersPage } from './pages/admin/admin.users';
-import { LoginPage } from './pages/client/login';
+import { UsersPage } from 'pages/admin/admin.users';
+import { LoginPage } from 'pages/client/login';
 
 const router = createBrowserRouter([
     {
@@ -28,14 +27,9 @@ const router = createBrowserRouter([
         path: '/admin',
         Component: AdminLayout,
         children: [
-            {
-                path: 'dashboard',
-                Component: DashboardPage,
-            },
-            {
-                path: 'users',
-                Component: UsersPage,
-            }
+            { index: true, element: <Navigate to="dashboard" replace /> },
+            { path: 'dashboard', Component: DashboardPage },
+            { path: 'users', Component: UsersPage }
         ]
     }
 ]);
