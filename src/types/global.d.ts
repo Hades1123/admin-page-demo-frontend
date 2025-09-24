@@ -18,4 +18,16 @@ declare global {
         roleID: number,
         confirmPassword?: string,
     }
+
+    interface IProduct {
+        id: number,
+        name: string,
+        shortDesc: string,
+        description: string,
+        quantity: number,
+        sold: number,
+        price: number,
+        thumbnail?: string,
+        sliders?: string[],
+    }
 }

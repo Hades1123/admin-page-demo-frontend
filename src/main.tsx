@@ -9,6 +9,7 @@ import { AdminLayout } from 'pages/admin/admin.layout';
 import { DashboardPage } from '@/pages/admin/admin.dashboard';
 import { UsersPage } from 'pages/admin/admin.users';
 import { LoginPage } from 'pages/client/login';
+import { ProductsPage } from './pages/admin/admin.products';
 
 const router = createBrowserRouter([
     {
@@ -29,7 +30,8 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <Navigate to="dashboard" replace /> },
             { path: 'dashboard', Component: DashboardPage },
-            { path: 'users', Component: UsersPage }
+            { path: 'users', Component: UsersPage },
+            { path: 'products', Component: ProductsPage }
         ]
     }
 ]);

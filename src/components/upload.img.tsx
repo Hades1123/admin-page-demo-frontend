@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { UploadRequestOption } from 'rc-upload/lib/interface';
 import { PlusOutlined } from '@ant-design/icons';
-import { Image, Upload } from 'antd';
+import { App, Image, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
+import type { RcFile } from 'antd/es/upload';
 
 interface IProps {
     fileList: UploadFile[];
     setFileList: (v: UploadFile[]) => void;
+    numberOfImages?: number;
+    title: string;
 }
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -20,9 +23,22 @@ const getBase64 = (file: FileType): Promise<string> =>
     });
 
 export const UploadImg = (props: IProps) => {
-    const { fileList, setFileList } = props;
+    const { fileList, setFileList, numberOfImages = 1, title } = props;
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
+    const { message } = App.useApp();
+
+    const beforeUpload = (file: FileType) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must smaller than 2MB!');
+        }
+        return isJpgOrPng && isLt2M;
+    };
 
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
@@ -34,7 +50,9 @@ export const UploadImg = (props: IProps) => {
     };
 
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
+        if (beforeUpload(newFileList[newFileList.length - 1].originFileObj as RcFile)) {
+            setFileList(newFileList);
+        }
     }
 
     const uploadButton = (
@@ -54,14 +72,16 @@ export const UploadImg = (props: IProps) => {
 
     return (
         <>
+            <h1 className='mb-2'>{title}</h1>
             <Upload
                 listType="picture-card"
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
                 customRequest={dummyRequest}
+                multiple={true}
             >
-                {fileList.length >= 1 ? null : uploadButton}
+                {fileList.length >= numberOfImages ? null : uploadButton}
             </Upload>
             {previewImage && (
                 <Image

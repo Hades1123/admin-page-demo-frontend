@@ -40,3 +40,23 @@ export const registerAPI = (name: string, email: string, password: string, confi
         email, password, confirmPassword, phone, name
     });
 }
+
+export const getAllProductsAPI = () => {
+    return axios.get<ApiResponse<IProduct[]>>('/products');
+}
+
+export const getProductByID = (id: number) => {
+    return axios.get<ApiResponse<IProduct>>(`/products/${id}`);
+}
+
+export const uploadImage = (fileList: RcFile[]) => {
+    const formData = new FormData();
+    fileList.forEach(item => {
+        formData.append('image', item);
+    })
+    return axios.post<ApiResponse<string>>(`/upload`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        }
+    });
+}

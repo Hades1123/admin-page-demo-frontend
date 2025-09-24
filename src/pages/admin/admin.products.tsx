@@ -4,18 +4,19 @@ import { ProTable } from '@ant-design/pro-components';
 import { Button, Space } from 'antd';
 import { useRef, useState } from 'react';
 import { AddUserForm } from "@/components/admin/add.user.form";
-import { deleteUserByID, getUserAPI, getUserByID } from "@/services/api";
+import { deleteUserByID, getAllProductsAPI, getProductByID, getUserAPI } from "@/services/api";
+import { AddProductForm } from '@/components/admin/add.product.form';
 
 
-export const UsersPage = () => {
-    const [isAddUserModalOpen, setIsAddUserModalOpen] = useState<boolean>(false);
-    const [currentUser, setCurrentUser] = useState<null | IUser>(null);
+export const ProductsPage = () => {
+    const [isAddProductModal, setIsAddProductModal] = useState<boolean>(false);
+    const [currentProduct, setcurrentProduct] = useState<null | IProduct>(null);
 
     const onEditUser = async (id: number) => {
-        const result = await getUserByID(id);
+        const result = await getProductByID(id);
         if (result.data) {
-            setCurrentUser(result.data);
-            setIsAddUserModalOpen(true);
+            setcurrentProduct(result.data);
+            setIsAddProductModal(true);
         }
     }
 
@@ -30,7 +31,7 @@ export const UsersPage = () => {
         }
     }
 
-    const columns: ProColumns<IUser>[] = [
+    const columns: ProColumns<IProduct>[] = [
         {
             hidden: true,
             dataIndex: 'id',
@@ -41,12 +42,20 @@ export const UsersPage = () => {
             dataIndex: 'name'
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
+            title: 'shortDesc',
+            dataIndex: 'shortDesc',
         },
         {
-            title: "Phone",
-            dataIndex: 'phone',
+            title: "Quantity",
+            dataIndex: 'quantity',
+        },
+        {
+            title: "Sold",
+            dataIndex: 'sold',
+        },
+        {
+            title: "Price",
+            dataIndex: 'price',
         },
         {
             title: 'Action',
@@ -69,13 +78,13 @@ export const UsersPage = () => {
 
     return (
         <>
-            <ProTable<IUser>
+            <ProTable<IProduct>
                 rowKey='id'
                 columns={columns}
                 actionRef={actionRef}
                 cardBordered
                 request={async (params, sort, filter) => {
-                    const result = await getUserAPI();
+                    const result = await getAllProductsAPI();
                     return {
                         data: result.data,
                         success: true,
@@ -87,18 +96,18 @@ export const UsersPage = () => {
                         key="button"
                         icon={<PlusOutlined />}
                         type="primary"
-                        onClick={() => setIsAddUserModalOpen(true)}
+                        onClick={() => setIsAddProductModal(true)}
                     >
                         Add
                     </Button>,
                 ]}
             />
-            <AddUserForm
-                isModalOpen={isAddUserModalOpen}
-                setIsModalOpen={setIsAddUserModalOpen}
+            <AddProductForm
+                isModalOpen={isAddProductModal}
+                setIsModalOpen={setIsAddProductModal}
                 refreshTable={refreshTable}
-                currentUser={currentUser}
-                setCurrentUser={setCurrentUser}
+                currentProduct={currentProduct}
+                setCurrentProduct={setcurrentProduct}
             />
         </>
     )
