@@ -1,4 +1,4 @@
-import { BellOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
+import { BellOutlined, LineChartOutlined, MenuFoldOutlined, MenuUnfoldOutlined, PieChartOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown, Input, Layout, Menu, Space, Typography, Drawer, Grid } from "antd";
 import type { MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -24,12 +24,13 @@ export const AdminLayout = () => {
   const selectedKey = useMemo(() => {
     if (location.pathname.includes('/admin/users')) return 'users';
     if (location.pathname.includes('/admin/dashboard')) return 'dashboard';
+    if (location.pathname.includes('/admin/revenue')) return 'revenue';
     if (location.pathname.includes('/admin/products')) return 'products';
     return 'dashboard';
   }, [location.pathname]);
 
   const onMenuClick: MenuProps['onClick'] = ({ key }) => {
-    if (key === 'dashboard' || key === 'users' || key === 'products') {
+    if (key === 'dashboard' || key === 'revenue' || key === 'users' || key === 'products') {
       navigate(`/admin/${key}`);
     }
   };
@@ -41,6 +42,7 @@ export const AdminLayout = () => {
 
   const menuItems: MenuProps['items'] = [
     { key: 'dashboard', icon: <PieChartOutlined />, label: 'Dashboard' },
+    { key: 'revenue', icon: <LineChartOutlined />, label: 'Revenue' },
     { key: 'users', icon: <UserOutlined />, label: 'Users' },
     { key: 'products', icon: <ShopOutlined />, label: 'Products' },
   ];
