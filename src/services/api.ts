@@ -60,3 +60,14 @@ export const uploadImage = (fileList: RcFile[]) => {
         }
     });
 }
+
+export const loginAPI = async (email: string, password: string) => {
+    const result = await fetch('http://localhost:8080/login', {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    return result.json();
+}

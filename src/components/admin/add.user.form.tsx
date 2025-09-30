@@ -144,7 +144,7 @@ export const AddUserForm = (props: IProps) => {
                             name="name"
                             rules={[{ required: true, message: 'Please input your name!' }]}
                         >
-                            <Input />
+                            <Input disabled />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -153,16 +153,26 @@ export const AddUserForm = (props: IProps) => {
                             name="email"
                             rules={[{ required: true, message: 'Please input your email!' }]}
                         >
-                            <Input />
+                            <Input disabled />
                         </Form.Item>
                     </Col>
                     <Col span={14}>
-                        <Form.Item<IUser>
+                        {/* <Form.Item<IUser>
                             label="Phone"
                             name="phone"
                             rules={[{ required: true, message: 'Please input your phone!' }]}
                         >
                             <Input />
+                        </Form.Item> */}
+                        <Form.Item<IUser>
+                            label="Active"
+                            name={'active'}
+                        >
+                            <Select
+                                defaultValue={currentUser?.active ?? "None"}
+                                options={[{ label: 'active', value: true }, { label: 'block', value: false }]}
+                                value={currentUser?.active ?? true}
+                            />
                         </Form.Item>
                     </Col>
                     <Col span={8}>

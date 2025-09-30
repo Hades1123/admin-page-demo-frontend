@@ -1,15 +1,18 @@
-import { createUserAPI } from '@/services/api';
+import { loginAPI } from '@/services/api';
 import type { FormProps } from 'antd';
 import { App, Button, Col, Form, Input, Row } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 type FieldType = Pick<IUser, 'password' | 'email'>;
 
 
 export const LoginPage = () => {
-    const { message, notification } = App.useApp();
+    // const { message, notification } = App.useApp();
+    const navigate = useNavigate();
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        console.log(values);
+        const result = await loginAPI(values.email, values.password);
+        localStorage.setItem('access_token', result.data.access_token);
+        navigate('/');
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -21,7 +24,7 @@ export const LoginPage = () => {
             <Row align={'middle'} justify={'center'} style={{ height: "100vh" }}>
                 <Col span={12} className='flex justify-center'>
                     <fieldset className='p-8 border-2 border-gray-200 rounded-lg'>
-                        <legend className='p-2 border-2 border-sky-300 bg-sky-200 rounded-lg'>Register</legend>
+                        <legend className='p-2 border-2 border-sky-300 bg-sky-200 rounded-lg'>Login</legend>
                         <Form
                             name="basic"
                             onFinish={onFinish}
@@ -61,11 +64,11 @@ export const LoginPage = () => {
                                     { required: true, message: 'Please input your password!' },
                                 ]}
                             >
-                                <Input />
+                                <Input.Password />
                             </Form.Item>
 
-                            <Button type='primary' htmlType='submit' style={{ width: '100%', marginTop: 10 }}>Register</Button>
-                            or <Link to={'/'} className='text-red-300'>Go to homepage</Link>
+                            <Button type='primary' htmlType='submit' style={{ width: '100%', marginTop: 10 }}>Login</Button>
+                            or <Link to={'/register'} className='text-red-300'>Register now !</Link>
                         </Form>
                     </fieldset>
                 </Col>

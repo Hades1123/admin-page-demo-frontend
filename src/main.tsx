@@ -35,6 +35,10 @@ const router = createBrowserRouter([
             { path: 'users', Component: UsersPage },
             { path: 'products', Component: ProductsPage }
         ]
+    },
+    {
+        path: '/users',
+        element: <div>This is users page</div>
     }
 ]);
 

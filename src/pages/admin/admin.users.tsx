@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { Button, Space } from 'antd';
+import { Button, Space, Tag } from 'antd';
 import { useRef, useState } from 'react';
 import { AddUserForm } from "@/components/admin/add.user.form";
 import { deleteUserByID, getUserAPI, getUserByID } from "@/services/api";
@@ -47,6 +47,17 @@ export const UsersPage = () => {
         {
             title: "Phone",
             dataIndex: 'phone',
+            hidden: true,
+        },
+        {
+            title: 'Active',
+            dataIndex: 'active',
+            render: (_, record) => {
+                if (record.active) {
+                    return <Tag color='success'>active</Tag>
+                }
+                return <Tag color='error'>block</Tag>
+            }
         },
         {
             title: 'Action',
@@ -69,6 +80,7 @@ export const UsersPage = () => {
 
     return (
         <>
+            <h1>Danh sách khách hàng</h1>
             <ProTable<IUser>
                 rowKey='id'
                 columns={columns}

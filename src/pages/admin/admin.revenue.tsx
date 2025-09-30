@@ -227,18 +227,18 @@ export const RevenuePage: React.FC = () => {
   const chartOptions: EChartsOption = useMemo(() => ({
     backgroundColor: 'transparent',
     legend: {
-      data: ['Revenue', 'Orers', 'Avg Order Value'],
+      data: ['Revenue', 'Orders', 'Avg Order Value'],
     },
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'cross' },
       formatter: (params: any) => {
         const lines = Array.isArray(params) ? params : [params];
-        const header = `<strong>${lines[0]?.axisValue}</strong>`;
+        const header = `<strong>${lines[0]?.axisValue}  </strong>`;
         const body = lines
           .map((item: any) => {
             const { seriesName, value, marker } = item;
-            if (seriesName === 'Revenue' || seriesName === 'Avg Order Value') {
+            if (seriesName === 'Revenue' || seriesName === 'Avg Order Value' || seriesName === 'Orders') {
               return `${marker} ${seriesName}: ${currencyFormatter.format(Number(value))}`;
             }
             return `${marker} ${seriesName}: ${Number(value).toLocaleString('en-US')}`;
@@ -282,6 +282,7 @@ export const RevenuePage: React.FC = () => {
         tooltip: { valueFormatter: (value: number) => currencyFormatter.format(Number(value)) },
       },
       {
+
         name: 'Orders',
         type: 'line',
         yAxisIndex: 1,
@@ -292,16 +293,16 @@ export const RevenuePage: React.FC = () => {
         data: ordersSeries,
         tooltip: { valueFormatter: (value: number) => Number(value).toLocaleString('en-US') },
       },
-      {
-        name: 'Avg Order Value',
-        type: 'line',
-        smooth: true,
-        symbolSize: 8,
-        lineStyle: { width: 2, type: 'dashed', color: '#faad14' },
-        itemStyle: { color: '#faad14' },
-        data: avgOrderSeries,
-        tooltip: { valueFormatter: (value: number) => currencyFormatter.format(Number(value)) },
-      },
+      // {
+      //   name: 'Avg Order Value',
+      //   type: 'line',
+      //   smooth: true,
+      //   symbolSize: 8,
+      //   lineStyle: { width: 2, type: 'dashed', color: '#faad14' },
+      //   itemStyle: { color: '#faad14' },
+      //   data: avgOrderSeries,
+      //   tooltip: { valueFormatter: (value: number) => currencyFormatter.format(Number(value)) },
+      // },
     ],
   }), [xAxisData, revenueSeries, ordersSeries, avgOrderSeries, granularity]);
 
@@ -408,6 +409,7 @@ export const RevenuePage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* header  */}
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <Title level={3} className="!mb-0">Revenue Intelligence</Title>
@@ -444,6 +446,7 @@ export const RevenuePage: React.FC = () => {
             </Tag>
           )}
         </div>
+
         <div className="mt-5">
           <ReactECharts option={chartOptions} style={{ height: 360 }} notMerge lazyUpdate />
         </div>

@@ -1,18 +1,25 @@
 import { createUserAPI, registerAPI } from '@/services/api';
 import type { FormProps } from 'antd';
 import { App, Button, Col, Form, Input, Row } from 'antd';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 type FieldType = Omit<IUser, 'avatar' | 'id'>;
 
 
 export const RegisterPage = () => {
     const { message, notification } = App.useApp();
+    const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
+
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         const { email, name, password, confirmPassword, phone } = values;
+        setLoading(true);
         const result = await registerAPI(name, email, password, confirmPassword!, phone);
+        setLoading(false);
         if (result.success) {
             message.success('Register successfully !!!');
+            navigate('/login');
         }
         else {
             notification.error({
@@ -140,7 +147,7 @@ export const RegisterPage = () => {
                             >
                                 <Input.Password />
                             </Form.Item>
-                            <Button type='primary' htmlType='submit' style={{ width: '100%', marginTop: 10 }}>Register</Button>
+                            <Button type='primary' htmlType='submit' style={{ width: '100%', marginTop: 10 }} loading={loading}>Register</Button>
                             or <Link to={'/'} className='text-red-300'>Go to homepage</Link>
                         </Form>
                     </fieldset>

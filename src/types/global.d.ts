@@ -17,6 +17,7 @@ declare global {
         avatar: string,
         roleID: number,
         confirmPassword?: string,
+        active?: boolean,
     }
 
     interface IProduct {
