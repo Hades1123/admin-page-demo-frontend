@@ -421,7 +421,7 @@ export const RevenuePage: React.FC = () => {
         </Space>
       </div>
 
-      <Card className="shadow-sm" bodyStyle={{ padding: '20px 24px' }}>
+      <Card className="shadow-sm" styles={{ body: { padding: '20px 24px' } }}>
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <Space wrap>
             <RangePicker

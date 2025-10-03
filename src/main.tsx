@@ -9,8 +9,10 @@ import { AdminLayout } from 'pages/admin/admin.layout';
 import { DashboardPage } from '@/pages/admin/admin.dashboard';
 import { UsersPage } from 'pages/admin/admin.users';
 import { LoginPage } from 'pages/client/login';
-import { ProductsPage } from './pages/admin/admin.products';
-import { RevenuePage } from './pages/admin/admin.revenue';
+import { ProductsPage } from 'pages/admin/admin.products';
+import { RevenuePage } from 'pages/admin/admin.revenue';
+import { InventoryStaticPage } from 'pages/admin/admin.inventory_static';
+import { InventoryHistory } from 'pages/admin/admin.inventory.history';
 
 const router = createBrowserRouter([
     {
@@ -33,7 +35,9 @@ const router = createBrowserRouter([
             { path: 'dashboard', Component: DashboardPage },
             { path: 'revenue', Component: RevenuePage },
             { path: 'users', Component: UsersPage },
-            { path: 'products', Component: ProductsPage }
+            { path: 'products', Component: ProductsPage },
+            { path: 'inventory-static', Component: InventoryStaticPage },
+            { path: 'inventory-history', Component: InventoryHistory },
         ]
     },
     {
